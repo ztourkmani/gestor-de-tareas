@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Tareas Pro</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Mis Tareas</h1>
+            <div class="stats-container">
+                <p id="pending-count">Cargando tareas...</p>
+            </div>
+        </header>
+
+        <main>
+            <form id="task-form">
+                <div class="input-group">
+                    <label for="task-title">Título de la actividad</label>
+                    <input type="text" id="task-title" placeholder="Ej. Comprar café" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="task-desc">Descripción (opcional)</label>
+                    <textarea id="task-desc" placeholder="Añade detalles adicionales aquí..."></textarea>
+                </div>
+                
+                <button type="submit" id="add-btn">
+                    <span>+</span> Guardar Tarea
+                </button>
+            </form>
+
+            <hr class="divider">
+
+            <ul id="task-list" class="task-list">
+                </ul>
+        </main>
+        
+        <footer>
+            <p>© 2026 Mi Gestor de Tareas Personal - Zulaima Tourkmani</p>
+        </footer>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
