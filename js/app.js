@@ -1,119 +1,131 @@
-/**
- * APP.JS - Controlador de la Interfaz
- * Maneja los eventos del DOM y coordina las acciones entre el usuario y TaskManager.
- */
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Referencias a elementos del DOM
-    const form = document.getElementById('task-form');
-    const taskList = document.getElementById('task-list');
-    const taskTitleInput = document.getElementById('task-title');
-    const taskDescInput = document.getElementById('task-desc');
-    const pendingCountText = document.getElementById('pending-count');
+const taskForm = document.getElementById('task-form');
+const taskInput = document.getElementById('task-title');
+const taskDesc = document.getElementById('task-desc');
+const taskList = document.getElementById('task-list');
+const pendingCountEl = document.getElementById('pending-count');
 
-    /**
-     * Función principal para renderizar la lista de tareas
-     */
-    async function render() {
-        try {
-            // 1. Obtener tareas desde el servidor (json-server)
-            const tasks = await TaskManager.fetchAll();
 
-            // 2. Actualizar el contador de pendientes
-            const pendingTasks = tasks.filter(t => !t.completed).length;
-            pendingCountText.innerText = pendingTasks === 1 
-                ? `Tienes 1 tarea pendiente` 
-                : `Tienes ${pendingTasks} tareas pendientes`;
+function formatDate(date) {
+    const d = new Date(date);
+    const hoy = new Date();
+    const ayer = new Date(hoy);
+    ayer.setDate(ayer.getDate() - 1);
 
-            // 3. Generar el HTML de la lista
-            if (tasks.length === 0) {
-                taskList.innerHTML = `
-                    <div style="text-align:center; padding: 2rem; color: #94a3b8;">
-                        <p>No hay tareas pendientes. ¡Disfruta tu día! ☕</p>
-                    </div>
-                `;
-                return;
-            }
-
-            taskList.innerHTML = tasks.map(task => `
-                <li class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
-                    <div class="task-info">
-                        <h3>${task.title}</h3>
-                        <p>${task.description || 'Sin descripción'}</p>
-                        <small>📅 ${task.date}</small>
-                    </div>
-                    <div class="actions">
-                        <button class="status-btn" title="Cambiar estado">
-                            ${task.completed ? 'Reabrir' : 'Hecho'}
-                        </button>
-                        <button class="delete-btn" title="Eliminar tarea">Borrar</button>
-                    </div>
-                </li>
-            `).join('');
-
-        } catch (error) {
-            console.error("Error en el renderizado:", error);
-            taskList.innerHTML = `
-                <div style="background: #fee2e2; color: #ef4444; padding: 1rem; border-radius: 8px; text-align: center;">
-                    <strong>⚠️ Error de conexión</strong>
-                    <p>Asegúrate de que json-server esté corriendo en el puerto 3000.</p>
-                </div>
-            `;
-        }
+    if (d.toDateString() === hoy.toDateString()) {
+        return 'Hoy ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    } else if (d.toDateString() === ayer.toDateString()) {
+        return 'Ayer ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    } else {
+        return d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
     }
+}
 
-    /**
-     * Evento: Envío del formulario (Crear Tarea)
-     */
-    form.addEventListener('submit', async (e) => {
+
+function renderTasks() {
+    const tasks = TaskManager.getAllTasks();
+    
+    if (tasks.length === 0) {
+        taskList.innerHTML = `
+            <li class="task-item" style="justify-content: center; text-align: center; color: var(--text-muted);">
+                No hay tareas pendientes. ¡Agrega una nueva!
+            </li>
+        `;
+    } else {
+        taskList.innerHTML = tasks.map(task => `
+            <li class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
+                <div class="task-info">
+                    <h3>${escapeHTML(task.title)}</h3>
+                    ${task.description ? `<p>${escapeHTML(task.description)}</p>` : ''}
+                    <small>${task.completed ? '✓ Completada' : '⏳ Pendiente'}</small>
+                </div>
+                <div class="task-date">
+                    <span>📅 ${formatDate(task.createdAt)}</span>
+                </div>
+                <div class="actions">
+                    ${task.completed ? 
+                        `<button class="reopen-btn" onclick="window.app.reopenTask('${task.id}')">Reabrir</button>` : 
+                        `<button class="status-btn" onclick="window.app.completeTask('${task.id}')">Hecho</button>`
+                    }
+                    <button class="delete-btn" onclick="window.app.deleteTask('${task.id}')">Borrar</button>
+                </div>
+            </li>
+        `).join('');
+    }
+    
+    updatePendingCount();
+}
+
+
+function updatePendingCount() {
+    const count = TaskManager.getPendingCount();
+    pendingCountEl.textContent = count === 1 
+        ? '📌 1 tarea pendiente' 
+        : `📌 ${count} tareas pendientes`;
+}
+
+
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/[&<>"]/g, function(match) {
+        if (match === '&') return '&amp;';
+        if (match === '<') return '&lt;';
+        if (match === '>') return '&gt;';
+        if (match === '"') return '&quot;';
+        return match;
+    });
+}
+
+
+function initApp() {
+    
+    const storedTasks = Storage.loadTasks();
+    TaskManager.init(storedTasks);
+    
+
+    renderTasks();
+    
+    
+    const saveAndRender = () => {
+        Storage.saveTasks(TaskManager.tasks);
+        renderTasks();
+    };
+
+
+    taskForm.addEventListener('submit', (e) => {
         e.preventDefault();
-
-        const title = taskTitleInput.value.trim();
-        const desc = taskDescInput.value.trim();
-
-        if (title) {
-            // Desactivar botón temporalmente para evitar doble clic
-            const btn = document.getElementById('add-btn');
-            btn.disabled = true;
-            btn.innerText = 'Guardando...';
-
-            await TaskManager.add(title, desc);
-            
-            // Limpiar y resetear
-            form.reset();
-            btn.disabled = false;
-            btn.innerHTML = '<span>+</span> Guardar Tarea';
-            
-            render();
-        }
+        
+        const title = taskInput.value.trim();
+        if (!title) return;
+        
+        const description = taskDesc.value.trim();
+        
+        TaskManager.addTask(title, description);
+        saveAndRender();
+        
+        
+        taskForm.reset();
+        taskInput.focus();
     });
 
-    /**
-     * Evento: Clics en la lista (Eliminar y Completar)
-     * Usamos delegación de eventos para mayor eficiencia.
-     */
-    taskList.addEventListener('click', async (e) => {
-        const li = e.target.closest('.task-item');
-        if (!li) return;
-        
-        const id = li.dataset.id;
-
-        // Caso 1: Botón de borrar
-        if (e.target.classList.contains('delete-btn')) {
-            if (confirm('¿Estás seguro de eliminar esta tarea?')) {
-                await TaskManager.remove(id);
-                render();
+    
+    window.app = {
+        deleteTask: (id) => {
+            if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+                TaskManager.deleteTask(id);
+                saveAndRender();
             }
-        } 
-        
-        // Caso 2: Botón de estado (completar/reabrir)
-        else if (e.target.classList.contains('status-btn')) {
-            const isCompleted = li.classList.contains('completed');
-            await TaskManager.toggle(id, isCompleted);
-            render();
+        },
+        completeTask: (id) => {
+            TaskManager.toggleTaskStatus(id);
+            saveAndRender();
+        },
+        reopenTask: (id) => {
+            TaskManager.reopenTask(id);
+            saveAndRender();
         }
-    });
+    };
+}
 
-    // Carga inicial al abrir la página
-    render();
-});
+// Iniciar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', initApp);

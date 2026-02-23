@@ -1,29 +1,55 @@
-const API_URL = 'http://localhost:3000/tasks';
 
-const StorageManager = {
-    async getAll() {
-        const res = await fetch(API_URL);
-        return await res.json();
+const Storage = {
+    
+    STORAGE_KEY: 'task_manager_tasks',
+
+    
+    saveTasks(tasks) {
+        try {
+            const tasksToSave = tasks.map(task => ({
+                id: task.id,
+                title: task.title,
+                description: task.description,
+                completed: task.completed,
+                createdAt: task.createdAt
+            }));
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tasksToSave));
+            return true;
+        } catch (error) {
+            console.error('Error guardando tareas:', error);
+            return false;
+        }
     },
 
-    async create(task) {
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(task)
-        });
-        return await res.json();
+    
+    loadTasks() {
+        try {
+            const storedTasks = localStorage.getItem(this.STORAGE_KEY);
+            if (!storedTasks) {
+                
+                return [];
+            }
+            
+            const parsedTasks = JSON.parse(storedTasks);
+            
+            
+            return parsedTasks.map(task => ({
+                ...task,
+                createdAt: new Date(task.createdAt)
+            }));
+        } catch (error) {
+            console.error('Error cargando tareas:', error);
+            return [];
+        }
     },
 
-    async delete(id) {
-        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+    
+    clearTasks() {
+        localStorage.removeItem(this.STORAGE_KEY);
     },
 
-    async update(id, data) {
-        await fetch(`${API_URL}/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
+    
+    hasTasks() {
+        return localStorage.getItem(this.STORAGE_KEY) !== null;
     }
 };
