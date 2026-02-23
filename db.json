@@ -31,14 +31,6 @@
       "category": "trabajo",
       "completed": false,
       "createdAt": "2026-02-23T18:23:57.345Z"
-    },
-    {
-      "id": "5cf9",
-      "title": "Testing",
-      "description": "testing",
-      "category": "estudio",
-      "completed": false,
-      "createdAt": "2026-02-23T18:52:48.964Z"
     }
   ]
 }

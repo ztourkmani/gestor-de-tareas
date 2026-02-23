@@ -1,4 +1,4 @@
-
+// DOM Elements
 const taskForm = document.getElementById('task-form');
 const taskTitle = document.getElementById('task-title');
 const taskDesc = document.getElementById('task-desc');
@@ -12,7 +12,7 @@ const searchInput = document.getElementById('search-input');
 const filterButtons = document.querySelectorAll('.filter-btn');
 const sortSelect = document.getElementById('sort-select');
 
-
+// Modal Elements
 const editModal = document.getElementById('edit-modal');
 const closeModal = document.getElementById('close-modal');
 const cancelModal = document.getElementById('cancel-modal');
@@ -24,24 +24,26 @@ const editDesc = document.getElementById('edit-desc');
 const editCategory = document.getElementById('edit-category');
 const editStatus = document.getElementById('edit-status');
 
-
+// State
 let currentFilter = 'all';
 let currentSort = 'newest';
 let currentSearch = '';
 
-
+// Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM cargado, inicializando...');
     
-   
-    if (!taskForm) console.error('❌ taskForm no encontrado');
-    if (!taskList) console.error('❌ taskList no encontrado');
-    if (!searchInput) console.error('❌ searchInput no encontrado');
-    if (!sortSelect) console.error('❌ sortSelect no encontrado');
-    if (!editModal) console.error('❌ editModal no encontrado');
-    
     await loadInitialData();
     setupEventListeners();
+    
+    // Mostrar bienvenida
+    setTimeout(() => {
+        AlertSystem.info(
+            '¡Bienvenida!',
+            'Gestiona tus tareas de manera eficiente',
+            3000
+        );
+    }, 500);
 });
 
 async function loadInitialData() {
@@ -52,29 +54,33 @@ async function loadInitialData() {
         TaskManager.init(tasks);
         renderTasks();
         updateStats();
+        
+        if (tasks.length > 0) {
+            AlertSystem.success(
+                'Datos cargados',
+                `Se cargaron ${tasks.length} tareas correctamente`,
+                2000
+            );
+        }
     } catch (error) {
         console.error('Error loading initial data:', error);
-        alert('Error cargando tareas. Asegúrate de que json-server esté corriendo en el puerto correcto.');
+        AlertSystem.error(
+            'Error de conexión',
+            'No se pudo conectar con el servidor. Verifica que json-server esté corriendo.'
+        );
     }
 }
 
 function setupEventListeners() {
     console.log('Configurando event listeners...');
     
-    
     if (taskForm) {
         taskForm.addEventListener('submit', handleAddTask);
-        console.log('✓ Event listener agregado a taskForm');
-    } else {
-        console.error('❌ No se pudo agregar event listener a taskForm');
     }
-    
     
     if (searchInput) {
         searchInput.addEventListener('input', handleSearch);
-        console.log('✓ Event listener agregado a searchInput');
     }
-    
     
     if (filterButtons.length > 0) {
         filterButtons.forEach(btn => {
@@ -82,42 +88,40 @@ function setupEventListeners() {
                 filterButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentFilter = btn.dataset.filter;
-                console.log('Filtro cambiado a:', currentFilter);
                 renderTasks();
+                AlertSystem.info(
+                    'Filtro aplicado',
+                    `Mostrando: ${btn.textContent}`,
+                    1500
+                );
             });
         });
-        console.log('✓ Event listeners agregados a filterButtons');
-    } else {
-        console.error('❌ No se encontraron filterButtons');
     }
     
-   
     if (sortSelect) {
         sortSelect.addEventListener('change', (e) => {
             currentSort = e.target.value;
-            console.log('Orden cambiado a:', currentSort);
             renderTasks();
+            AlertSystem.info(
+                'Orden cambiado',
+                `Ordenando por: ${e.target.options[e.target.selectedIndex].text}`,
+                1500
+            );
         });
-        console.log('✓ Event listener agregado a sortSelect');
     }
     
-   
     if (closeModal) {
         closeModal.addEventListener('click', closeModalFn);
-        console.log('✓ Event listener agregado a closeModal');
     }
     
     if (cancelModal) {
         cancelModal.addEventListener('click', closeModalFn);
-        console.log('✓ Event listener agregado a cancelModal');
     }
     
     if (saveEdit) {
         saveEdit.addEventListener('click', handleEditTask);
-        console.log('✓ Event listener agregado a saveEdit');
     }
     
-  
     window.addEventListener('click', (e) => {
         if (e.target === editModal) {
             closeModalFn();
@@ -127,11 +131,13 @@ function setupEventListeners() {
 
 async function handleAddTask(e) {
     e.preventDefault();
-    console.log('handleAddTask llamado');
     
     const title = taskTitle.value.trim();
     if (!title) {
-        alert('Por favor ingresa un título');
+        AlertSystem.warning(
+            'Campo requerido',
+            'Por favor ingresa un título para la tarea'
+        );
         return;
     }
     
@@ -153,10 +159,17 @@ async function handleAddTask(e) {
         
         renderTasks();
         updateStats();
-        console.log('Tarea agregada correctamente');
+        
+        AlertSystem.success(
+            '¡Tarea creada!',
+            'La tarea se ha agregado correctamente'
+        );
     } catch (error) {
         console.error('Error:', error);
-        alert('Error al guardar la tarea. Verifica que json-server esté corriendo.');
+        AlertSystem.error(
+            'Error al guardar',
+            'No se pudo guardar la tarea. Verifica la conexión con el servidor.'
+        );
     } finally {
         const addBtn = document.getElementById('add-btn');
         if (addBtn) {
@@ -173,7 +186,10 @@ async function handleEditTask() {
     const title = editTitle.value.trim();
     
     if (!title) {
-        alert('Por favor ingresa un título');
+        AlertSystem.warning(
+            'Campo requerido',
+            'Por favor ingresa un título para la tarea'
+        );
         return;
     }
     
@@ -194,10 +210,17 @@ async function handleEditTask() {
         closeModalFn();
         renderTasks();
         updateStats();
-        console.log('Tarea actualizada correctamente');
+        
+        AlertSystem.success(
+            '¡Tarea actualizada!',
+            'Los cambios se han guardado correctamente'
+        );
     } catch (error) {
         console.error('Error:', error);
-        alert('Error al actualizar la tarea');
+        AlertSystem.error(
+            'Error al actualizar',
+            'No se pudo actualizar la tarea. Verifica la conexión.'
+        );
     } finally {
         if (saveEdit) {
             saveEdit.disabled = false;
@@ -208,7 +231,6 @@ async function handleEditTask() {
 
 function handleSearch() {
     currentSearch = searchInput.value;
-    console.log('Búsqueda:', currentSearch);
     renderTasks();
 }
 
@@ -334,7 +356,7 @@ function closeModalFn() {
     }
 }
 
-
+// Global functions for onclick handlers
 window.editTask = (id) => {
     console.log('editTask llamado con id:', id);
     
@@ -367,9 +389,18 @@ window.completeTask = async (id) => {
         await TaskManager.toggleTaskStatus(id);
         renderTasks();
         updateStats();
+        
+        AlertSystem.success(
+            '¡Tarea completada!',
+            'La tarea se ha marcado como completada',
+            2000
+        );
     } catch (error) {
         console.error('Error:', error);
-        alert('Error al completar la tarea');
+        AlertSystem.error(
+            'Error al completar',
+            'No se pudo completar la tarea'
+        );
     }
 };
 
@@ -382,29 +413,56 @@ window.reopenTask = async (id) => {
             await TaskManager.toggleTaskStatus(id);
             renderTasks();
             updateStats();
+            
+            AlertSystem.info(
+                'Tarea reabierta',
+                'La tarea ha sido movida a pendientes',
+                2000
+            );
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Error al reabrir la tarea');
+        AlertSystem.error(
+            'Error al reabrir',
+            'No se pudo reabrir la tarea'
+        );
     }
 };
 
 window.deleteTask = async (id) => {
     console.log('deleteTask llamado con id:', id);
     
-    if (!confirm('¿Estás seguro de eliminar esta tarea?')) return;
+    const confirmed = await AlertSystem.confirm(
+        'Eliminar tarea',
+        '¿Estás segura de que quieres eliminar esta tarea? Esta acción no se puede deshacer.',
+        {
+            confirmText: 'Eliminar',
+            cancelText: 'Cancelar',
+            type: 'danger'
+        }
+    );
+    
+    if (!confirmed) return;
     
     try {
         await TaskManager.deleteTask(id);
         renderTasks();
         updateStats();
+        
+        AlertSystem.success(
+            '¡Tarea eliminada!',
+            'La tarea se ha eliminado correctamente'
+        );
     } catch (error) {
         console.error('Error:', error);
-        alert('Error al eliminar la tarea');
+        AlertSystem.error(
+            'Error al eliminar',
+            'No se pudo eliminar la tarea'
+        );
     }
 };
 
-
+// Helper functions
 function escapeHTML(str) {
     if (!str) return '';
     return str.replace(/[&<>"]/g, function(match) {
