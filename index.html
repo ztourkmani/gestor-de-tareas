@@ -7,47 +7,158 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-
-    <div class="app-container">
-        <header>
-            <h1> Mis Tareas </h1>
-            <div class="stats-container">
-                <p id="pending-count">Cargando tareas...</p>
-            </div>
+    <div class="container">
+       
+        <header class="header">
+            <h1>Mis Tareas</h1>
+            <p class="subtitle">Gestiona tus actividades diarias</p>
         </header>
 
-        <main>
-            <form id="task-form">
-                <div class="input-group">
-                    <label for="task-title">📝 Título de la actividad</label>
-                    <input type="text" id="task-title" placeholder="Ej. Comprar café" required>
-                </div>
-                
-                <div class="input-group">
-                    <label for="task-desc">📋 Descripción (opcional)</label>
-                    <textarea id="task-desc" placeholder="Añade detalles adicionales aquí..."></textarea>
-                </div>
-                
-                <button type="submit" id="add-btn">
-                    <span>+</span> Guardar Tarea
-                </button>
-            </form>
-
-            <hr class="divider">
-
-            <ul id="task-list" class="task-list">
-            </ul>
-        </main>
         
-        <footer>
-            <p>© 2026 Mi Gestor de Tareas Personal - Zulaima Tourkmani</p>
-        </footer>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-label">Pendientes</span>
+                <span class="stat-value" id="pending-count">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Completadas</span>
+                <span class="stat-value" id="completed-count">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Total</span>
+                <span class="stat-value" id="total-count">0</span>
+            </div>
+        </div>
+
+       
+        <div class="task-form-card">
+            <h3><i class="fas fa-plus-circle"></i> Nueva Tarea</h3>
+            
+            <form id="task-form">
+                <div class="form-group">
+                    <label for="task-title">Título</label>
+                    <input type="text" id="task-title" placeholder="Ej. Reunión con equipo" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-desc">Descripción</label>
+                    <textarea id="task-desc" placeholder="Añade detalles adicionales..." rows="2"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-category">Categoría</label>
+                        <select id="task-category">
+                            <option value="trabajo">💼 Trabajo</option>
+                            <option value="personal">🏠 Personal</option>
+                            <option value="estudio">📚 Estudio</option>
+                            <option value="salud">❤️ Salud</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary" id="add-btn">
+                        <i class="fas fa-save"></i> Guardar Tarea
+                    </button>
+                </div>
+            </form>
+        </div>
+
+       
+        <div class="filters-section">
+            <div class="filter-tabs">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="pending">Pendientes</button>
+                <button class="filter-btn" data-filter="completed">Completadas</button>
+            </div>
+            
+            <div class="sort-container">
+                <select id="sort-select" class="sort-select">
+                    <option value="newest">Más recientes</option>
+                    <option value="oldest">Más antiguas</option>
+                    <option value="az">A-Z</option>
+                    <option value="za">Z-A</option>
+                </select>
+            </div>
+        </div>
+
+       
+        <div class="tasks-container">
+            <table class="tasks-table">
+                <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Título</th>
+                        <th>Categoría</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="task-list">
+                   
+                </tbody>
+            </table>
+            
+           
+            <div class="empty-state" id="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>No hay tareas</h3>
+                <p>Comienza agregando una nueva tarea</p>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Tarea</h3>
+                <button class="modal-close" id="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-form">
+                    <input type="hidden" id="edit-task-id">
+                    
+                    <div class="form-group">
+                        <label for="edit-title">Título</label>
+                        <input type="text" id="edit-title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-category">Categoría</label>
+                        <select id="edit-category">
+                            <option value="trabajo">💼 Trabajo</option>
+                            <option value="personal">🏠 Personal</option>
+                            <option value="estudio">📚 Estudio</option>
+                            <option value="salud">❤️ Salud</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-desc">Descripción</label>
+                        <textarea id="edit-desc" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-status">Estado</label>
+                        <select id="edit-status">
+                            <option value="pending">Pendiente</option>
+                            <option value="completed">Completada</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-modal">Cancelar</button>
+                <button class="btn-primary" id="save-edit">Guardar Cambios</button>
+            </div>
+        </div>
     </div>
 
     <script src="js/storage.js"></script>

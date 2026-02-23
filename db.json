@@ -1,18 +1,36 @@
 {
   "tasks": [
     {
-      "id": "f48e",
-      "title": "Testing",
-      "description": "Probando la pagina",
-      "date": "21/2/2026, 4:44:08 p. m.",
-      "completed": false
+      "id": "9aec",
+      "title": "Enviar facturacion a contribuyentes especiales",
+      "description": "Enviar via email",
+      "category": "trabajo",
+      "completed": false,
+      "createdAt": "2026-02-23T18:04:28.557Z"
     },
     {
-      "id": "f581",
-      "title": "si",
-      "description": "eso",
-      "date": "21/2/2026, 5:04:46 p. m.",
-      "completed": false
+      "id": "70a1",
+      "title": "Ir a chequeo medico",
+      "description": "Realizarme los exámenes de sangre para mostrarle al doctor",
+      "category": "salud",
+      "completed": true,
+      "createdAt": "2026-02-23T18:05:11.584Z"
+    },
+    {
+      "id": "bb1d",
+      "title": "organizar los cierres de caja diarios",
+      "description": "chequear, cuadrar y foliar",
+      "category": "trabajo",
+      "completed": false,
+      "createdAt": "2026-02-23T18:23:01.055Z"
+    },
+    {
+      "id": "9ba3",
+      "title": "Enviar trabajo de matemática",
+      "description": "subir a la plataforma de la universidad",
+      "category": "estudio",
+      "completed": false,
+      "createdAt": "2026-02-23T18:23:57.345Z"
     }
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "name": "task-manager",
+  "version": "1.0.0",
+  "description": "Gestor de tareas con json-server",
+  "scripts": {
+    "start": "npx json-server --watch db.json --port 3000",
+    "start:alt": "npx json-server --watch db.json --port 3001",
+    "kill": "taskkill /F /IM node.exe"
+  },
+  "dependencies": {
+    "json-server": "^0.17.4"
+  }
+}
