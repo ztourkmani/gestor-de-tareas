@@ -37,11 +37,13 @@ body {
     justify-content: center;
 }
 
+body{
+    background: rgb(149, 72, 200);
+}
 .container {
     max-width: 1200px;
     width: 100%;
 }
-
 
 .header {
     margin-bottom: 24px;
@@ -50,12 +52,12 @@ body {
 .header h1 {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: white;
     margin-bottom: 4px;
 }
 
 .subtitle {
-    color: var(--text-muted);
+    color: white;
     font-size: 0.95rem;
 }
 
@@ -90,7 +92,7 @@ body {
     box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
 }
 
-/* Stats Grid */
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -217,7 +219,7 @@ body {
     transform: translateY(0);
 }
 
-/* Filters Section */
+
 .filters-section {
     display: flex;
     justify-content: space-between;
@@ -273,7 +275,7 @@ body {
     border-color: var(--primary);
 }
 
-/* Tasks Table */
+
 .tasks-container {
     background: var(--white);
     border-radius: 12px;
@@ -332,7 +334,6 @@ body {
     color: #065f46;
 }
 
-/* Category Badges */
 .category-badge {
     display: inline-flex;
     align-items: center;

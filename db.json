@@ -4,7 +4,7 @@
       "id": "9aec",
       "title": "Enviar facturacion a contribuyentes especiales",
       "description": "Enviar via email",
-      "category": "trabajo",
+      "category": "estudio",
       "completed": false,
       "createdAt": "2026-02-23T18:04:28.557Z"
     },
@@ -28,9 +28,17 @@
       "id": "9ba3",
       "title": "Enviar trabajo de matemática",
       "description": "subir a la plataforma de la universidad",
-      "category": "estudio",
+      "category": "trabajo",
       "completed": false,
       "createdAt": "2026-02-23T18:23:57.345Z"
+    },
+    {
+      "id": "5cf9",
+      "title": "Testing",
+      "description": "testing",
+      "category": "estudio",
+      "completed": false,
+      "createdAt": "2026-02-23T18:52:48.964Z"
     }
   ]
 }

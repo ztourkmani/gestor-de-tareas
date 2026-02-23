@@ -1,4 +1,3 @@
-// CAMBIA EL PUERTO SEGÚN CORRESPONDA (3000 o 3001)
 const API_URL = 'http://localhost:3001/tasks';
 
 const Storage = {

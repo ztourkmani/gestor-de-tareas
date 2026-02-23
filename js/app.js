@@ -1,4 +1,4 @@
-// DOM Elements - Verificar que existan antes de usarlos
+
 const taskForm = document.getElementById('task-form');
 const taskTitle = document.getElementById('task-title');
 const taskDesc = document.getElementById('task-desc');
@@ -12,7 +12,7 @@ const searchInput = document.getElementById('search-input');
 const filterButtons = document.querySelectorAll('.filter-btn');
 const sortSelect = document.getElementById('sort-select');
 
-// Modal Elements - Verificar que existan
+
 const editModal = document.getElementById('edit-modal');
 const closeModal = document.getElementById('close-modal');
 const cancelModal = document.getElementById('cancel-modal');
@@ -24,16 +24,16 @@ const editDesc = document.getElementById('edit-desc');
 const editCategory = document.getElementById('edit-category');
 const editStatus = document.getElementById('edit-status');
 
-// State
+
 let currentFilter = 'all';
 let currentSort = 'newest';
 let currentSearch = '';
 
-// Initialize
+
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM cargado, inicializando...');
     
-    // Verificar que los elementos existen
+   
     if (!taskForm) console.error('❌ taskForm no encontrado');
     if (!taskList) console.error('❌ taskList no encontrado');
     if (!searchInput) console.error('❌ searchInput no encontrado');
@@ -61,7 +61,7 @@ async function loadInitialData() {
 function setupEventListeners() {
     console.log('Configurando event listeners...');
     
-    // Form submit - Verificar que existe
+    
     if (taskForm) {
         taskForm.addEventListener('submit', handleAddTask);
         console.log('✓ Event listener agregado a taskForm');
@@ -69,13 +69,13 @@ function setupEventListeners() {
         console.error('❌ No se pudo agregar event listener a taskForm');
     }
     
-    // Search input
+    
     if (searchInput) {
         searchInput.addEventListener('input', handleSearch);
         console.log('✓ Event listener agregado a searchInput');
     }
     
-    // Filter buttons
+    
     if (filterButtons.length > 0) {
         filterButtons.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -91,7 +91,7 @@ function setupEventListeners() {
         console.error('❌ No se encontraron filterButtons');
     }
     
-    // Sort select
+   
     if (sortSelect) {
         sortSelect.addEventListener('change', (e) => {
             currentSort = e.target.value;
@@ -101,7 +101,7 @@ function setupEventListeners() {
         console.log('✓ Event listener agregado a sortSelect');
     }
     
-    // Modal events - Verificar que existen
+   
     if (closeModal) {
         closeModal.addEventListener('click', closeModalFn);
         console.log('✓ Event listener agregado a closeModal');
@@ -117,7 +117,7 @@ function setupEventListeners() {
         console.log('✓ Event listener agregado a saveEdit');
     }
     
-    // Close modal on outside click
+  
     window.addEventListener('click', (e) => {
         if (e.target === editModal) {
             closeModalFn();
@@ -334,7 +334,7 @@ function closeModalFn() {
     }
 }
 
-// Global functions for onclick handlers
+
 window.editTask = (id) => {
     console.log('editTask llamado con id:', id);
     
@@ -404,7 +404,7 @@ window.deleteTask = async (id) => {
     }
 };
 
-// Helper functions
+
 function escapeHTML(str) {
     if (!str) return '';
     return str.replace(/[&<>"]/g, function(match) {
