@@ -31,6 +31,14 @@
       "category": "trabajo",
       "completed": false,
       "createdAt": "2026-02-23T18:23:57.345Z"
+    },
+    {
+      "id": "5ffa",
+      "title": "Testing",
+      "description": "Testing",
+      "category": "trabajo",
+      "completed": true,
+      "createdAt": "2026-02-23T19:53:37.525Z"
     }
   ]
 }
